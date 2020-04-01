@@ -1,0 +1,16 @@
+{
+  "name": "nvjson",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jsfunc.js",
+  "bin": {
+    "nvjson_flat": "./BIN/flat.js",
+    "nvjson_nest": "./BIN/nest.js",
+    "nvjson_fmt":  "./BIN/fmt.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dli",
+  "license": "MIT"
+}
