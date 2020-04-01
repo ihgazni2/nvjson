@@ -1,19 +1,4 @@
-/*
-JsonArray
-JsonObject
-var  {parse, Visitor, AST} = require('json-ast');
-JSON_BUFFER = `// Some comment
 {
-  "key": "value"
-`;
-
-// `verbose` will include the position in each node
-ast = parse(JSON_BUFFER, {junker: true});
-npm install json-ast
-d = jast.AST.JsonNode.toJSON(ast)
-util.isPrimitive({})
-*/
-var o =  {
       "a" : 1,
       "b" : {"ba" : 2},
       "c" : 3,
@@ -37,6 +22,5 @@ var o =  {
         ]
       },
       "e" : null
-    };
+}
 
-var tree = jobj2tree(o)

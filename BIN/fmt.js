@@ -8,6 +8,6 @@ function wjson(fn,js) {
 
 var srcfn = process.argv[2]
 var s = fs.readFileSync(srcfn)
-var ast = parse(s, {junker: true});
+var ast = parse(s.toString(), {junker: true});
 var d = AST.JsonNode.toJSON(ast)
 wjson('fmt.'+srcfn,d)

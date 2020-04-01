@@ -20,6 +20,6 @@ function wjson(fn,js) {
 var srcfn = process.argv[2]
 var flat = rjson(srcfn)
 
-var nest = jsfunc.deflatten(nest)
+var nest = jsfunc.deflatten(flat)
 
 wjson('nest.'+srcfn,nest)
