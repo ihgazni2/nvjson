@@ -7,9 +7,22 @@ function get_jobj_type(o) {
     if(o instanceof Array) {
         return('arr')
     } else if(util.isPrimitive(o)) {
-        return('raw')
+       if(o === null) {
+           return(null)
+       } else {
+           return(typeof(o))
+       }
     } else {
         return('dict')
+    }
+}
+
+
+function is_raw_type_via_str(s){
+    if((s === 'arr') || (s === 'dict')) {
+        return(false)
+    } else {
+        return(true)
     }
 }
 
@@ -163,7 +176,7 @@ function deflatten_from_dict(flat_dict,reorder=false,deepcopy=true) {
 }
 
 function get_container_or_val_via_nd(nd) {
-    if(nd.type==='raw') {
+    if(is_raw_type_via_str(nd.type)) {
         return(nd.val)
     } else if(nd.type === 'dict') {
         return({})
@@ -209,10 +222,108 @@ function struct_eq(j0,j1) {
     return(ndcls.struct_eq(tree0,tree1))
 }
 
+//
+function _get_kmat_val(o) {
+    if(o instanceof Array) {
+        return(o)
+    } else if(util.isPrimitive(o)) {
+       if(o === null) {
+           return(null)
+       } else {
+           return(typeof(o))
+       }
+    } else {
+        return(o)
+    }
+}
+
+function tree2kjobj(tree) {
+    let sdfs = tree.$sdfs()
+    let entries = sdfs.map(nd=>[get_pl(nd),get_container_or_val_via_nd(nd)])
+    entries = entries.map(entry=>[entry[0],_get_kmat_val(entry[1])])
+    let kjobj = entries[0][1]
+    for(let i=1;i<entries.length;i++) {
+        let pl = entries[i][0]
+        let v = entries[i][1]
+        set_dict_via_pl(pl,v,kjobj)
+    }
+    return(kjobj)
+}
+
+function nd2vjobj(nd){
+    let cond = is_raw_type_via_str(nd.type)
+    if(cond) {
+        return(nd.val)
+    } else {
+        return([])
+    }
+}
+
+function get_vmat_nonleaf_children(ele_children,vjobj_children) {
+    let vl = vjobj_children.filter(ele=>(ele instanceof Array))
+    let el = ele_children.filter(ele=>ele._children.length>0)
+    let children = vl.map((r,i)=>({vjobj:r,ele:el[i]}))
+    return(children)
+}
+
+
+function tree2vjobj(tree) {
+    let mat = tree.$sdfs2mat()
+    let rele = mat[0][0]
+    let unhandled = [{vjobj:[],ele:rele}]
+    let runhandled = unhandled
+    while(unhandled.length>0) {
+        next_unhandled = []
+        for(let i=0;i<unhandled.length;i++){
+            let ele = unhandled[i].ele
+            let vjobj = unhandled[i].vjobj
+            let chlocs = ele._children
+            let ele_children = chlocs.map(loc=>mat[loc[0]][loc[1]])
+            let nd_children = ele_children.map(ele=>ele._nd)
+            let vjobj_children = nd_children.map(nd=>nd2vjobj(nd))
+            vjobj_children.forEach(ch=>vjobj.push(ch))
+            let children = get_vmat_nonleaf_children(ele_children,vjobj_children)
+            next_unhandled = next_unhandled.concat(children)
+        }
+        unhandled = next_unhandled
+    }
+    return(runhandled[0].vjobj)
+}
+
+//
+function unzip(j) {
+    let tree = jobj2tree(j)
+    let kjobj = tree2kjobj(tree)
+    let vjobj = tree2vjobj(tree)
+    return({
+        schema:kjobj,
+        vmat:vjobj
+    })
+}
+
+
+
+function zip(d) {
+    let kjobj = d.schema
+    let vjobj = d.vmat
+    let k_entries = flatten_to_entries(kjobj)
+    let v_entries = flatten_to_entries(vjobj)
+    let entries = k_entries.map(
+        (k,i)=> {
+            if(typeof(k[1])==='string') {
+                return([k[0],v_entries[i][1]])
+            } else {
+                return(k)
+            }
+        }
+    )
+    return(deflatten_from_entries(entries))
+}
 
 
 module.exports = {
     get_jobj_type,
+    is_raw_type_via_str,
     get_jobj_child_klvl,
     jobj2tree,
     get_bracket_pl,
@@ -222,9 +333,15 @@ module.exports = {
     flatten_to_entries,
     set_dict_via_pl,
     get_val_via_pl,
+    get_container_or_val_via_nd,
     deflatten_from_entries,
     deflatten_from_dict,
     eq,
     struct_eq,
     tree2jobj,
+    tree2kjobj,
+    tree2vjobj,
+    //
+    unzip,
+    zip,
 }

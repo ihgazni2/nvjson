@@ -1,6 +1,6 @@
 {
   "name": "nvjson",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "jsfunc.js",
   "bin": {
@@ -14,6 +14,6 @@
   "author": "dli",
   "license": "MIT",
   "dependencies": {
-    "ndtreejs": "^1.0.9"
+    "ndtreejs": "^1.1.1"
   }
 }
