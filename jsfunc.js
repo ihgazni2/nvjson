@@ -337,6 +337,30 @@ function tree2jobj(tree) {
     return(jobj)
 }
 
+//
+function arr_to_ltdict(arr) {
+    if(get_jobj_type(arr) === 'arr') {
+        return(Object.fromEntries(Object.entries(arr)))
+    } else {
+        return(arr)
+    }
+}
+
+function convert_arr_to_dict(jobj) {
+    let tree = jobj2tree(jobj)
+    let sdfs = tree.$sdfs()
+    let entries = sdfs.map(nd=>[get_pl(nd),get_container_or_val_via_nd(nd)])
+    let o = entries[0][1]
+    for(let i=1;i<entries.length;i++) {
+        let pl = entries[i][0]
+        let v = entries[i][1]
+        v = arr_to_ltdict(v)
+        set_dict_via_pl(pl,v,o)
+    }
+    return(o)    
+}
+
+
 
 //
 function get_val_via_pl(pl,d) {
@@ -355,11 +379,50 @@ function eq(j0,j1) {
     return(true)
 }
 
-function struct_eq(j0,j1) {
+function cu_sign_func_ignore_primitive(nd) {
+    let typ = nd.type 
+    //only diff {} and []
+    let cond = (typ === 'dict') || (typ === 'arr')
+    if(cond) {
+        
+    } else {
+        //other types all ame
+        typ = 'other'
+    }
+    return(typ)
+}
+
+function cu_sign_func_compare_primitive(nd) {
+    //compare type
+    let typ = nd.type
+    return(typ)
+}
+
+
+function struct_eq(j0,j1,cfg) {
+    cfg = (cfg===undefined)?{}:cfg;
+    let ignore_order = (cfg.ignore_order === undefined)?true:cfg.ignore_order
+    let compare_value_type = (cfg.compare_value_type === undefined)?false:cfg.compare_value_type 
     let tree0 = jobj2tree(j0)
     let tree1 = jobj2tree(j1)
-    return(ndcls.struct_eq(tree0,tree1))
+    let func;
+    if(ignore_order) {
+        func = ndcls.struct_eq_ignore_order
+    } else {
+        func = ndcls.struct_eq_keep_order
+    }
+    let cu_sign_func;
+    if(compare_value_type){
+        cu_sign_func = cu_sign_func_compare_primitive
+    } else {
+        cu_sign_func = cu_sign_func_ignore_primitive
+    }
+    console.log(func,cu_sign_func)
+    let cond = func(tree0,tree1,cu_sign_func)
+    return(cond)
 }
+
+
 
 //
 function _get_kmat_val(o) {
@@ -491,11 +554,14 @@ module.exports = {
     deflatten_from_dot_dict,
     //
     eq,
-    struct_eq,
+    struct_eq, //ignore_order true false compare_value_type false true
     tree2jobj,
     tree2kjobj,
     tree2vjobj,
     //
     unzip,
     zip,
+    //
+    arr_to_ltdict,
+    convert_arr_to_dict,
 }

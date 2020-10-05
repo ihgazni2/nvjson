@@ -12,6 +12,34 @@ cli
 ---
 - npm install nvjson -g
 
+nvjson_dictize
+==============
+    
+    ::
+        
+        //j0.json
+        {
+            x:[100,200],
+            y:[
+                's',
+                {d:1000}
+            ],
+        }
+
+        BIN# nvjson_dictize  j0.json
+        { 
+            x: { 
+                '0': 100, 
+                '1': 200 
+            }, 
+            y: { 
+                '0': 's', 
+                '1': { d: 1000 } 
+            } 
+        }
+        BIN#
+
+
 nvjson_flat
 ===========
     
@@ -86,16 +114,14 @@ nvjson_flat
          '["repository","url"]': 'git+https://github.com/navegador5/nvjson.git'
         }
         */
-        
-                
         nvjson_flat -src ../package.json -mode entry 
         nvjson_flat -src ../package.json -mode entry -fmt dot
+        
         /*
         BIN# ls -l | egrep dot-entry
         -rw-r--r-- 1 root root  517 Oct  5 05:27 package-dot-entry-flat.json
         -rw-r--r-- 1 root root  659 Oct  5 05:28 package-nodot-entry-flat.json
         BIN#
-        
         [
           [ '', {} ],
           [ 'name', 'nvjson' ],
@@ -117,7 +143,6 @@ nvjson_flat
           [ 'repository.type', 'git' ],
           [ 'repository.url', 'git+https://github.com/navegador5/nvjson.git' ]
         ]
-        
         */
         nvjson_flat -src ../package.json  -mode entry -fmt nodot
         /*
@@ -152,14 +177,12 @@ nvjson_flat
         
         */
 
-
 nvjson_nest
 ===========
     
     ::
     
         nvjson_nest -src package-dot-dict-flat.json -mode dict -fmt dot -dst jobj.json
-        
         /*
         {
          'name': 'nvjson',
@@ -198,20 +221,37 @@ nvjson_fmt
 - nvjson_fmt <src>
 - format a .json file
 
+nvjson_compare_struct
+=====================
+- see usage for details
+
+    ::
+        nvjson_compare_struct -json j0.json j1.json 
+        nvjson_compare_struct -json j0.json j1.json -ignore_order false -compare_value_type false
+
 usage
 -----
+
+struct_eq
+=========
+- compare two json , only compare struct/value_type ,ignore key
+- struct_eq(j0,j1,cfg)
+- default cfg is {ignore_order:true,compare_value_type:false}
+
 
     ::
     
         var nvjson = require('nvjson').jsfunc
         #compare the struct
-        #this will not work if using number or number-string as a key
+        # use {ignore_order:true} when using number-string-key
         #coz ES6 only non-number-string-key keep the order in which they were added to the object
         #    First, the keys that are integer indices, in ascending numeric order.
         #    Then, all other string keys, in the order in which they were added to the object.
         #    Lastly, all symbol keys, in the order in which they were added to the object. 
         #
         
+
+        var nvjson = require('nvjson')
         var j0 = {
             x:[100,200],
             y:[
@@ -220,18 +260,125 @@ usage
             ],
         }
         
-        
         var j1 = {
-            another_xkey:['sssss',333],
-            aa:[
-                2345,
-                {zzzzz:1}
+            y:[
+                's',
+                {d:1000}
+            ],
+            x:[100,200]
+        }
+        
+        //
+        
+        //IGNORE write order
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
+        //true
+        //KEEP write order 
+        nvjson.struct_eq(j0,j1,{ignore_order:false,compare_value_type:false})
+        //false
+
+
+        var j0 = {
+            x:[100,200],
+            y:[
+                's',
+                {d:1000}
             ],
         }
         
-        > nvjson.struct_eq(j0,j1)
-        true
-        >
+        var j1 = {
+            'another_x':['',''],
+            'another_y':[
+                '',
+                {'':1000}
+            ],
+        }
+        //only compare nest layer struct
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
+        //true
+        nvjson.struct_eq(j0,j1,{ignore_order:false,compare_value_type:false})
+        //true
+        //compare type 
+        var j0 = {
+            x:[100,200],
+            y:[
+                's',
+                {d:1000}
+            ],
+        }
+        var j1 = {
+            'another_x':{a:'',b:''},  
+            'another_y':[
+                '',
+                {'':1000}
+            ],
+        }
+        
+        // no diff {} and []
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
+        //false
+        nvjson.struct_eq(j0,j1,{ignore_order:false,compare_value_type:false})
+        //false
+        var j0 = {
+            x:[100,200],
+            y:[
+                's',
+                {d:1000}
+            ],
+        }
+        
+        var j1 = {
+            'another_x':[1,''],  //the second value j1.another_x[1] ='' is string  j0.x[1]  is number
+            'another_y':[
+                '',
+                {'':1000}
+            ],
+        }
+        
+        
+        //only compare {} and []
+        //compare primitive value type
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
+        //true
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
+        //true
+        //compare primitive value type
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:true})
+        //false
+        nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:true})
+        //false
+
+dictize
+=========
+- convert all array in json to object
+    
+    ::
+        
+        var j0 ={
+            x:[100,200],
+            y:[
+                's',
+                {d:1000}
+            ],
+        }
+        nvjson.convert_arr_to_dict(j0)
+        { 
+            x: { 
+                '0': 100, 
+                '1': 200 
+            }, 
+            y: { 
+                '0': 's', 
+                '1': { d: 1000 } 
+            } 
+        }        
+
+
+zip and unzip
+=============
+    
+    ::
+
 
         #zip and unzip
         var j = {

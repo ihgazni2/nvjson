@@ -39,10 +39,20 @@ function get_dstfn(srcfn,...others) {
     return(s)
 }
 
+function str_to_bool(s) {
+    if(s===undefined) {
+    } else {
+        s = s.toLowerCase()
+        s = (s[0]==='t')?true:false 
+    }
+    return(s)
+}
+
 
 module.exports = {
     rjson,
     wjson,
     group_args,
     get_dstfn,
+    str_to_bool,
 }
