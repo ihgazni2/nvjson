@@ -8,13 +8,202 @@ install
 -------
 - npm install nvjson
 
+cli
+---
+- npm install nvjson -g
+
+nvjson_flat
+===========
+    
+    ::
+        
+        nvjson_flat -src ../package.json
+        nvjson_flat -src ../package.json -mode dict
+        nvjson_flat -src ../package.json -mode dict -fmt dot
+        /*
+        BIN# ls -l | egrep "\-dot-dict"
+        -rw-r--r-- 1 root root  479 Oct  5 05:30 package-dot-dict-flat.json
+        BIN#
+        
+        {
+         '':
+             {},
+         'name': 'nvjson',
+         'version': '1.1.1',
+         'description': '',
+         'main': 'jsfunc.js',
+         'bin':
+                {},
+         'bin.nvjson_flat': './BIN/flat.js',
+         'bin.nvjson_nest': './BIN/nest.js',
+         'bin.nvjson_fmt': './BIN/fmt.js',
+         'scripts':
+                    {},
+         'scripts.test': 'echo "Error: no test specified" && exit 1',
+         'author': 'dli',
+         'license': 'MIT',
+         'dependencies':
+                         {},
+         'dependencies.json-ast': '^2.1.7',
+         'dependencies.ndtreejs': '^1.1.1',
+         'repository':
+                       {},
+         'repository.type': 'git',
+         'repository.url': 'git+https://github.com/navegador5/nvjson.git'
+        }
+        
+        */
+        nvjson_flat -src ../package.json -mode dict -fmt nodot
+        /*
+        BIN# ls -l | egrep nodot-dict
+        -rw-r--r-- 1 root root  621 Oct  5 05:30 package-nodot-dict-flat.json
+        BIN#
+        
+        {
+         '[]':
+               {},
+         '["name"]': 'nvjson',
+         '["version"]': '1.1.1',
+         '["description"]': '',
+         '["main"]': 'jsfunc.js',
+         '["bin"]':
+                    {},
+         '["bin","nvjson_flat"]': './BIN/flat.js',
+         '["bin","nvjson_nest"]': './BIN/nest.js',
+         '["bin","nvjson_fmt"]': './BIN/fmt.js',
+         '["scripts"]':
+                        {},
+         '["scripts","test"]': 'echo "Error: no test specified" && exit 1',
+         '["author"]': 'dli',
+         '["license"]': 'MIT',
+         '["dependencies"]':
+                             {},
+         '["dependencies","json-ast"]': '^2.1.7',
+         '["dependencies","ndtreejs"]': '^1.1.1',
+         '["repository"]':
+                           {},
+         '["repository","type"]': 'git',
+         '["repository","url"]': 'git+https://github.com/navegador5/nvjson.git'
+        }
+        */
+        
+                
+        nvjson_flat -src ../package.json -mode entry 
+        nvjson_flat -src ../package.json -mode entry -fmt dot
+        /*
+        BIN# ls -l | egrep dot-entry
+        -rw-r--r-- 1 root root  517 Oct  5 05:27 package-dot-entry-flat.json
+        -rw-r--r-- 1 root root  659 Oct  5 05:28 package-nodot-entry-flat.json
+        BIN#
+        
+        [
+          [ '', {} ],
+          [ 'name', 'nvjson' ],
+          [ 'version', '1.1.1' ],
+          [ 'description', '' ],
+          [ 'main', 'jsfunc.js' ],
+          [ 'bin', {} ],
+          [ 'bin.nvjson_flat', './BIN/flat.js' ],
+          [ 'bin.nvjson_nest', './BIN/nest.js' ],
+          [ 'bin.nvjson_fmt', './BIN/fmt.js' ],
+          [ 'scripts', {} ],
+          [ 'scripts.test', 'echo "Error: no test specified" && exit 1' ],
+          [ 'author', 'dli' ],
+          [ 'license', 'MIT' ],
+          [ 'dependencies', {} ],
+          [ 'dependencies.json-ast', '^2.1.7' ],
+          [ 'dependencies.ndtreejs', '^1.1.1' ],
+          [ 'repository', {} ],
+          [ 'repository.type', 'git' ],
+          [ 'repository.url', 'git+https://github.com/navegador5/nvjson.git' ]
+        ]
+        
+        */
+        nvjson_flat -src ../package.json  -mode entry -fmt nodot
+        /*
+        BIN# ls -l | egrep nodot-entry
+        -rw-r--r-- 1 root root  659 Oct  5 05:28 package-nodot-entry-flat.json
+        BIN#
+        
+        [
+          [ '[]', {} ],
+          [ '["name"]', 'nvjson' ],
+          [ '["version"]', '1.1.1' ],
+          [ '["description"]', '' ],
+          [ '["main"]', 'jsfunc.js' ],
+          [ '["bin"]', {} ],
+          [ '["bin","nvjson_flat"]', './BIN/flat.js' ],
+          [ '["bin","nvjson_nest"]', './BIN/nest.js' ],
+          [ '["bin","nvjson_fmt"]', './BIN/fmt.js' ],
+          [ '["scripts"]', {} ],
+          [ '["scripts","test"]', 'echo "Error: no test specified" && exit 1' ],
+          [ '["author"]', 'dli' ],
+          [ '["license"]', 'MIT' ],
+          [ '["dependencies"]', {} ],
+          [ '["dependencies","json-ast"]', '^2.1.7' ],
+          [ '["dependencies","ndtreejs"]', '^1.1.1' ],
+          [ '["repository"]', {} ],
+          [ '["repository","type"]', 'git' ],
+          [
+            '["repository","url"]',
+            'git+https://github.com/navegador5/nvjson.git'
+          ]
+        ]
+        
+        */
+
+
+nvjson_nest
+===========
+    
+    ::
+    
+        nvjson_nest -src package-dot-dict-flat.json -mode dict -fmt dot -dst jobj.json
+        
+        /*
+        {
+         'name': 'nvjson',
+         'version': '1.1.1',
+         'description': '',
+         'main': 'jsfunc.js',
+         'bin':
+                {
+                 'nvjson_flat': './BIN/flat.js',
+                 'nvjson_nest': './BIN/nest.js',
+                 'nvjson_fmt': './BIN/fmt.js'
+                },
+         'scripts':
+                    {
+                     'test': 'echo "Error: no test specified" && exit 1'
+                    },
+         'author': 'dli',
+         'license': 'MIT',
+         'dependencies':
+                         {
+                          'json-ast': '^2.1.7',
+                          'ndtreejs': '^1.1.1'
+                         },
+         'repository':
+                       {
+                        'type': 'git',
+                        'url': 'git+https://github.com/navegador5/nvjson.git'
+                       }
+        }
+        
+        */
+
+
+nvjson_fmt
+==========
+- nvjson_fmt <src>
+- format a .json file
+
 usage
 -----
 
     ::
     
         var nvjson = require('nvjson').jsfunc
-       
         #compare the struct
         #this will not work if using number or number-string as a key
         #coz ES6 only non-number-string-key keep the order in which they were added to the object
@@ -158,3 +347,118 @@ usage
           e: null }
         >        
 
+        #dot format
+        var jsfunc = require('./jsfunc')
+        var jobj = {
+          "name": "nvjson",
+          "version": "1.1.0",
+          "description": "",
+          "main": "jsfunc.js",
+          "bin": {
+            "nvjson_flat": "./BIN/flat.js",
+            "nvjson_nest": "./BIN/nest.js",
+            "nvjson_fmt": "./BIN/fmt.js"
+          },
+          "scripts": {
+            "test": "echo \"Error: no test specified\" && exit 1"
+          },
+          "author": "dli",
+          "license": "MIT",
+          "dependencies": {
+            "json-ast": "^2.1.7",
+            "ndtreejs": "^1.1.1"
+          },
+          "repository": {
+            "type": "git",
+            "url": "git+https://github.com/navegador5/nvjson.git"
+          },
+          "arr":[1,2,3,4]
+        }
+        var dot_entries = jsfunc.flatten_to_dot_entries(jobj)
+        /*
+        > dot_entries
+        
+        */
+        jsfunc.deflatten_from_dot_entries(dot_entries)
+        
+        /*
+        {
+          name: 'nvjson',
+          version: '1.1.0',
+          description: '',
+          main: 'jsfunc.js',
+          bin: {
+            nvjson_flat: './BIN/flat.js',
+            nvjson_nest: './BIN/nest.js',
+            nvjson_fmt: './BIN/fmt.js'
+          },
+          scripts: { test: 'echo "Error: no test specified" && exit 1' },
+          author: 'dli',
+          license: 'MIT',
+          dependencies: { 'json-ast': '^2.1.7', ndtreejs: '^1.1.1' },
+          repository: { type: 'git', url: 'git+https://github.com/navegador5/nvjson.git' },
+          arr: [ 1, 2, 3, 4 ]
+        }
+        
+        */
+        var dot_dict = jsfunc.flatten_to_dot_dict(jobj)
+        /*
+        > dot_dict
+        {
+          '': {},
+          name: 'nvjson',
+          version: '1.1.0',
+          description: '',
+          main: 'jsfunc.js',
+          bin: {},
+          'bin.nvjson_flat': './BIN/flat.js',
+          'bin.nvjson_nest': './BIN/nest.js',
+          'bin.nvjson_fmt': './BIN/fmt.js',
+          scripts: {},
+          'scripts.test': 'echo "Error: no test specified" && exit 1',
+          author: 'dli',
+          license: 'MIT',
+          dependencies: {},
+          'dependencies.json-ast': '^2.1.7',
+          'dependencies.ndtreejs': '^1.1.1',
+          repository: {},
+          'repository.type': 'git',
+          'repository.url': 'git+https://github.com/navegador5/nvjson.git',
+          arr: [],
+          'arr.0': 1,
+          'arr.1': 2,
+          'arr.2': 3,
+          'arr.3': 4
+        }
+        >
+        */
+        
+        jsfunc.deflatten_from_dot_dict(dot_dict)
+        /*
+        {
+          name: 'nvjson',
+          version: '1.1.0',
+          description: '',
+          main: 'jsfunc.js',
+          bin: {
+            nvjson_flat: './BIN/flat.js',
+            nvjson_nest: './BIN/nest.js',
+            nvjson_fmt: './BIN/fmt.js'
+          },
+          scripts: { test: 'echo "Error: no test specified" && exit 1' },
+          author: 'dli',
+          license: 'MIT',
+          dependencies: { 'json-ast': '^2.1.7', ndtreejs: '^1.1.1' },
+          repository: { type: 'git', url: 'git+https://github.com/navegador5/nvjson.git' },
+          arr: [ 1, 2, 3, 4 ]
+        }
+        
+        */
+        
+        var jobj={"x.y":100}
+        /*
+        > jsfunc.flatten_to_dot_dict(jobj)
+        Uncaught '["x.y"] have dot in it !! '
+        >
+        
+        */        

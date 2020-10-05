@@ -112,6 +112,75 @@ function flatten_to_entries(o) {
     return(entries)
 }
 
+//
+function is_valid_dot_key(s) {
+    s = s.toString()
+    let cond = !(s.indexOf('.')>=0)
+    return(cond)
+}
+
+function is_valid_pl_for_dot(pl){
+    let cond = pl.every(r=>is_valid_dot_key(r))
+    return(cond)
+}
+
+
+function entries_to_dot_entries(entries) {
+    let arr =[]
+    for(let i=0;i<entries.length;i++) {
+        let entry = entries[i]
+        let pl = JSON.parse(entry[0])
+        let cond = is_valid_pl_for_dot(pl)
+        if(cond) {
+            arr.push([pl.join('.'),entry[1]])
+        } else {
+            throw(entry[0]+' have dot in it !! ')
+        }
+    }
+    return(arr)
+}
+
+function is_valid_nondot_key(s) {
+    s = s.toString()
+    let cond = !(s.indexOf('[')>=0) && !(s.indexOf(']')>=0) 
+    return(cond)
+}
+
+function is_valid_pl_for_nondot(pl){
+    let cond = pl.every(r=>is_valid_dot_key(r))
+    return(cond)
+}
+
+
+
+function dot_entries_to_entries(entries) {
+    let arr =[]
+    for(let i=0;i<entries.length;i++) {
+        let entry = entries[i]
+        let pl = JSON.parse(entry[0])
+        pl = pl.split('.')
+        let cond = is_valid_pl_for_nondot(pl)
+        if(cond) {
+            arr.push([pl.join('.'),entry[1]])
+        } else {
+            throw(entry[0]+' have dot in it !! ')
+        }
+    }
+    return(arr)
+}
+
+
+
+function flatten_to_dot_entries(o) {
+    let entries = flatten_to_entries(o) 
+    return(entries_to_dot_entries(entries))
+}
+
+//
+
+
+
+
 function flatten_to_dict(jobj) {
     let entries = flatten_to_entries(jobj)
     let d = {}
@@ -123,6 +192,18 @@ function flatten_to_dict(jobj) {
     return(d)
 }
 
+function flatten_to_dot_dict(jobj) {
+    let entries = flatten_to_dot_entries(jobj)
+    let d = {}
+    for(let i=0;i<entries.length;i++) {
+        let k = entries[i][0]
+        let v = entries[i][1]
+        d[k] = v
+    }
+    return(d)
+}
+
+
 
 
 function set_dict_via_pl(pl,v,d) {
@@ -132,6 +213,26 @@ function set_dict_via_pl(pl,v,d) {
     d[pl[pl.length-1]] = v
     return(d)
 }
+
+function set_dflt_dict_via_pl(dict,pl,v) {
+    let d = dict
+    for(let i=0;i<pl.length-1;i++) {
+        let k = pl[i]
+        let cond = (d[k] !== undefined)
+        if(cond) {
+            d = d[k]
+        } else {
+            d[k] = {}
+            d= d[k]
+        }
+    }
+    d[pl[pl.length-1]] = v
+    return(dict)
+}
+
+
+
+
 
 function deflatten_from_entries(entries,deepcopy=true) {
    entries = deepcopy?JSON.parse(JSON.stringify(entries)) : entries
@@ -143,6 +244,21 @@ function deflatten_from_entries(entries,deepcopy=true) {
    }
    return(d)     
 }
+
+
+function deflatten_from_dot_entries(entries,deepcopy=true) {
+   entries = deepcopy?JSON.parse(JSON.stringify(entries)) : entries
+   let d = entries[0][1]
+   for(let i=1;i<entries.length;i++) {
+       let pl = entries[i][0].split('.')
+       let v = entries[i][1]
+       set_dict_via_pl(pl,v,d)
+   }
+   return(d)
+}
+
+
+
 
 function _reorder_entries_by_pl_length(entries) {
    entries = entries.sort(
@@ -174,6 +290,29 @@ function deflatten_from_dict(flat_dict,reorder=false,deepcopy=true) {
    }
    return(jobj)    
 }
+
+function deflatten_from_dot_dict(flat_dict,reorder=false,deepcopy=true) {
+   flat_dict = deepcopy?JSON.parse(JSON.stringify(flat_dict)) : flat_dict
+   let entries = []
+   for(let k in flat_dict) {
+       let pl = k.split('.')
+       let v = flat_dict[k]
+       entries.push([pl,v])
+   }
+   if(reorder) {
+       entries = _reorder_entries_by_pl_length(entries)
+   } else {
+   }
+   let jobj = entries[0][1]
+   for(let i=1;i<entries.length;i++) {
+       let pl = entries[i][0]
+       let v = entries[i][1]
+       set_dict_via_pl(pl,v,jobj)
+   }
+   return(jobj)
+}
+
+
 
 function get_container_or_val_via_nd(nd) {
     if(is_raw_type_via_str(nd.type)) {
@@ -322,20 +461,35 @@ function zip(d) {
 
 
 module.exports = {
+    set_dict_via_pl,      //pl,v,d
+    set_dflt_dict_via_pl, //d,pl,v
+    get_val_via_pl,       //pl,d
+    ////
     get_jobj_type,
     is_raw_type_via_str,
     get_jobj_child_klvl,
     jobj2tree,
-    get_bracket_pl,
-    get_pl,
-    get_flat_key,
+    get_bracket_pl,        //nd
+    get_pl,                //nd
+    get_flat_key,          //nd
+    get_container_or_val_via_nd, //nd
+    ////
+    is_valid_dot_key,
+    is_valid_nondot_key,
+    is_valid_pl_for_dot,
+    is_valid_pl_for_nondot,
+    entries_to_dot_entries,
+    dot_entries_to_entries,
+    ////
     flatten_to_dict,
+    flatten_to_dot_dict,
     flatten_to_entries,
-    set_dict_via_pl,
-    get_val_via_pl,
-    get_container_or_val_via_nd,
+    flatten_to_dot_entries,
     deflatten_from_entries,
+    deflatten_from_dot_entries,
     deflatten_from_dict,
+    deflatten_from_dot_dict,
+    //
     eq,
     struct_eq,
     tree2jobj,
