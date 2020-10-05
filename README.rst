@@ -221,11 +221,13 @@ nvjson_fmt
 - nvjson_fmt <src>
 - format a .json file
 
+
 nvjson_compare_struct
 =====================
 - see usage for details
-    
+
     ::  
+    
         nvjson_compare_struct -json j0.json j1.json 
         nvjson_compare_struct -json j0.json j1.json -ignore_order false -compare_value_type false
 
