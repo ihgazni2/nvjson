@@ -224,8 +224,8 @@ nvjson_fmt
 nvjson_compare_struct
 =====================
 - see usage for details
-
-    ::
+    
+    ::  
         nvjson_compare_struct -json j0.json j1.json 
         nvjson_compare_struct -json j0.json j1.json -ignore_order false -compare_value_type false
 
@@ -608,4 +608,48 @@ zip and unzip
         Uncaught '["x.y"] have dot in it !! '
         >
         
-        */        
+        */
+
+API
+===
+    
+    ::
+
+        > nvjson
+        {
+          set_dict_via_pl: [Function: set_dict_via_pl],
+          set_dflt_dict_via_pl: [Function: set_dflt_dict_via_pl],
+          get_val_via_pl: [Function: get_val_via_pl],
+          get_jobj_type: [Function: get_jobj_type],
+          is_raw_type_via_str: [Function: is_raw_type_via_str],
+          get_jobj_child_klvl: [Function: get_jobj_child_klvl],
+          jobj2tree: [Function: jobj2tree],
+          get_bracket_pl: [Function: get_bracket_pl],
+          get_pl: [Function: get_pl],
+          get_flat_key: [Function: get_flat_key],
+          get_container_or_val_via_nd: [Function: get_container_or_val_via_nd],
+          is_valid_dot_key: [Function: is_valid_dot_key],
+          is_valid_nondot_key: [Function: is_valid_nondot_key],
+          is_valid_pl_for_dot: [Function: is_valid_pl_for_dot],
+          is_valid_pl_for_nondot: [Function: is_valid_pl_for_nondot],
+          entries_to_dot_entries: [Function: entries_to_dot_entries],
+          dot_entries_to_entries: [Function: dot_entries_to_entries],
+          flatten_to_dict: [Function: flatten_to_dict],
+          flatten_to_dot_dict: [Function: flatten_to_dot_dict],
+          flatten_to_entries: [Function: flatten_to_entries],
+          flatten_to_dot_entries: [Function: flatten_to_dot_entries],
+          deflatten_from_entries: [Function: deflatten_from_entries],
+          deflatten_from_dot_entries: [Function: deflatten_from_dot_entries],
+          deflatten_from_dict: [Function: deflatten_from_dict],
+          deflatten_from_dot_dict: [Function: deflatten_from_dot_dict],
+          eq: [Function: eq],
+          struct_eq: [Function: struct_eq],
+          tree2jobj: [Function: tree2jobj],
+          tree2kjobj: [Function: tree2kjobj],
+          tree2vjobj: [Function: tree2vjobj],
+          unzip: [Function: unzip],
+          zip: [Function: zip],
+          arr_to_ltdict: [Function: arr_to_ltdict],
+          convert_arr_to_dict: [Function: convert_arr_to_dict]
+        }
+        >    
