@@ -1,6 +1,6 @@
 {
   "name": "nvjson",
-  "version": "1.1.1",
+  "version": "1.1.4",
   "description": "",
   "main": "jsfunc.js",
   "bin": {
@@ -15,10 +15,14 @@
   "license": "MIT",
   "dependencies": {
     "json-ast": "^2.1.7",
-    "ndtreejs": "^1.1.1"
+    "ndtreejs": "^1.1.1",
+    "yargs": "^16.0.3"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/navegador5/nvjson.git"
+  },
+  "devDependencies": {
+    "rst2mdown": "^0.1.0"
   }
 }
