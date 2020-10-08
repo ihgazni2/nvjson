@@ -1,1 +1,1 @@
-rst2mdown -i readme.rst -o README.md
+pandoc -s -o README.md README.rst

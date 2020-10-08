@@ -316,7 +316,7 @@ struct_eq
             ],
         }
         
-        // no diff {} and []
+        // diff {} and []
         nvjson.struct_eq(j0,j1,{ignore_order:true,compare_value_type:false})
         //false
         nvjson.struct_eq(j0,j1,{ignore_order:false,compare_value_type:false})
