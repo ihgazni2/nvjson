@@ -622,6 +622,7 @@ API
           set_dict_via_pl: [Function: set_dict_via_pl],
           set_dflt_dict_via_pl: [Function: set_dflt_dict_via_pl],
           get_val_via_pl: [Function: get_val_via_pl],
+          del_val_via_pl: [Function: del_val_via_pl],
           get_jobj_type: [Function: get_jobj_type],
           is_raw_type_via_str: [Function: is_raw_type_via_str],
           get_jobj_child_klvl: [Function: get_jobj_child_klvl],

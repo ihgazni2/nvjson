@@ -370,6 +370,15 @@ function get_val_via_pl(pl,d) {
     return(d)
 }
 
+function del_val_via_pl(pl,d) {
+    let o = d
+    for(let i=0;i<pl.length-1;i++) {
+        d = d[pl[i]]
+    }
+    delete d[pl[pl.length-1]]
+    return(o)
+}
+
 function eq(j0,j1) {
     try {
         assert.deepStrictEqual(j0,j1)
@@ -527,6 +536,8 @@ module.exports = {
     set_dict_via_pl,      //pl,v,d
     set_dflt_dict_via_pl, //d,pl,v
     get_val_via_pl,       //pl,d
+    ////
+    del_val_via_pl,
     ////
     get_jobj_type,
     is_raw_type_via_str,
